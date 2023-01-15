@@ -4,25 +4,11 @@ import fetch from 'node-fetch'
 
 async function run(): Promise<void> {
   try {
-    const url = core.getInput('url')
-    if (!url) {
-      core.setFailed('Url is required to run Page Speed Insights.')
-      return
-    }
-
-    const key = core.getInput('key')
-    if (!key) {
-      core.setFailed('API key is required to run Page Speed Insights.')
-      return
-    }
-
     const queryParams = {
-      key: core.getInput('key'),
-      url: core.getInput('url'),
-      strategy: core.getInput('strategy') || 'mobile',
-      categories: (core.getMultilineInput('categories') || ['performance']).map(
-        x => x.toUpperCase()
-      )
+      key: core.getInput('key', {required: true}),
+      url: core.getInput('url', {required: true}),
+      strategy: core.getInput('strategy'),
+      categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
     }
 
     const fullUrl = buildUrl(
@@ -32,15 +18,10 @@ async function run(): Promise<void> {
       }
     )
 
-    core.info(`Running Page Speed Insights for ${url}`)
-    core.debug(`Calling: ${fullUrl}`)
+    core.info(`Running Page Speed Insights for ${queryParams.url}`)
     const response = await fetch(fullUrl)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = await response.json()
-    core.debug(`Response`)
-    core.debug(JSON.stringify(data, null, 2))
-
-    core.setOutput('lighthouseResult', JSON.stringify(data.lighthouseResult))
 
     for (const categoryKey of Object.keys(data.categories)) {
       const category = data.categories[categoryKey]

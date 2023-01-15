@@ -44,30 +44,19 @@ const node_fetch_1 = __importDefault(__nccwpck_require__(6882));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = core.getInput('url');
-            if (!url) {
-                core.setFailed('Url is required to run Page Speed Insights.');
-                return;
-            }
-            const key = core.getInput('key');
-            if (!key) {
-                core.setFailed('API key is required to run Page Speed Insights.');
-                return;
-            }
             const queryParams = {
-                key: core.getInput('key'),
-                url: core.getInput('url'),
-                strategy: core.getInput('strategy') || 'mobile',
-                categories: (core.getMultilineInput('categories') || ['performance']).map(x => x.toUpperCase())
+                key: core.getInput('key', { required: true }),
+                url: core.getInput('url', { required: true }),
+                strategy: core.getInput('strategy'),
+                categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
             };
             const fullUrl = (0, build_url_1.default)('https://www.googleapis.com/pagespeedonline/v5/runPagespeed', {
                 queryParams
             });
-            core.info(`Running Page Speed Insights for ${url}`);
+            core.info(`Running Page Speed Insights for ${queryParams.url}`);
             const response = yield (0, node_fetch_1.default)(fullUrl);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = yield response.json();
-            core.setOutput('lighthouseResult', JSON.stringify(data.lighthouseResult));
             for (const categoryKey of Object.keys(data.categories)) {
                 const category = data.categories[categoryKey];
                 const score = data.lighthouseResult.categories[category].score * 100;
