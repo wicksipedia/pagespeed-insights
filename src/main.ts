@@ -33,9 +33,12 @@ async function run(): Promise<void> {
     )
 
     core.info(`Running Page Speed Insights for ${url}`)
+    core.debug(`Calling: ${fullUrl}`)
     const response = await fetch(fullUrl)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = await response.json()
+    core.debug(`Response`)
+    core.debug(JSON.stringify(data, null, 2))
 
     core.setOutput('lighthouseResult', JSON.stringify(data.lighthouseResult))
 
