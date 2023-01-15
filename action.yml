@@ -9,9 +9,20 @@ inputs:
     description: "A PageSpeed Insights API key"
     required: true
   categories:
-    description: "Categories of checks to run (accessibility, best_practices, performance, PWA, SEO)."
+    description: "Categories of checks to run (accessibility, best_practices, performance, pwa, seo)."
   strategy:
     description: "Strategy to use when analyzing the page (mobile/desktop)."
+outputs:
+  accessibility:
+    description: accessibility output
+  best_practices:
+    description: best_practices output
+  performance:
+    description: performance output
+  pwa:
+    description: pwa output
+  seo:
+    description: seo output
 runs:
   using: 'node16'
   main: 'dist/index.js'
