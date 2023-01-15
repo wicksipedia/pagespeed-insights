@@ -39,7 +39,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const build_url_1 = __importDefault(__nccwpck_require__(8397));
 const node_fetch_1 = __importDefault(__nccwpck_require__(6882));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -51,12 +50,16 @@ function run() {
                 categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
             };
             core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
-            const fullUrl = (0, build_url_1.default)('https://www.googleapis.com/pagespeedonline/v5/runPagespeed', {
-                queryParams
-            });
-            core.debug(`Full URL: ${fullUrl}`);
+            const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
+            url.searchParams.append('key', core.getInput('key', { required: true }));
+            url.searchParams.append('url', core.getInput('url', { required: true }));
+            url.searchParams.append('strategy', core.getInput('strategy'));
+            for (const category of core.getMultilineInput('categories')) {
+                url.searchParams.append('categories', category.toUpperCase());
+            }
+            core.debug(`URL: ${url.toString()}`);
             core.info(`Running Page Speed Insights for ${queryParams.url}`);
-            const response = yield (0, node_fetch_1.default)(fullUrl);
+            const response = yield (0, node_fetch_1.default)(url.toString());
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = yield response.json();
             for (const categoryKey of Object.keys(data.categories)) {
@@ -1835,112 +1838,6 @@ function checkBypass(reqUrl) {
 }
 exports.checkBypass = checkBypass;
 //# sourceMappingURL=proxy.js.map
-
-/***/ }),
-
-/***/ 8397:
-/***/ (function(module, exports) {
-
-/**
- * build-url - A small library that builds a URL given its components
- * @version v6.0.0
- * @link https://github.com/steverydz/build-url#readme
- * @license MIT
- */
-;(function () {
-  'use strict';
-
-  var root = this;
-  var previousBuildUrl = root.buildUrl;
-
-  var encodedParam = function (param) {
-    return param === null ? '' : encodeURIComponent(String(param).trim());
-  };
-
-  var buildUrl = function (url, options) {
-    var queryString = [];
-    var key;
-    var builtUrl;
-    var caseChange; 
-    
-    if (options && options.lowerCase) {
-        caseChange = !!options.lowerCase;
-    } else {
-        caseChange = false;
-    }
-
-    if (url === null) {
-      builtUrl = '';
-    } else if (typeof(url) === 'object') {
-      builtUrl = '';
-      options = url;
-    } else {
-      builtUrl = url;
-    }
-
-    if (options) {
-      if (options.path) {
-        if(builtUrl && builtUrl[builtUrl.length - 1] === '/') {
-          builtUrl = builtUrl.slice(0, -1);
-        } 
-
-        var localVar = String(options.path).trim(); 
-        if (caseChange) {
-          localVar = localVar.toLowerCase();
-        }
-        if (localVar.indexOf('/') === 0) {
-            builtUrl += localVar;
-        } else {
-          builtUrl += '/' + localVar;
-        }
-      }
-
-      if (options.queryParams) {
-        for (key in options.queryParams) {
-          if (options.queryParams.hasOwnProperty(key) && options.queryParams[key] !== void 0) {
-            var param;
-            if (options.disableCSV && Array.isArray(options.queryParams[key]) && options.queryParams[key].length) {
-              for(var i = 0; i < options.queryParams[key].length; i++) {
-                param = options.queryParams[key][i];
-                queryString.push(key + '=' + encodedParam(param));
-              }
-            } else {              
-              if (caseChange) {
-                param = options.queryParams[key].toLowerCase();
-              }
-              else {
-                param = options.queryParams[key];
-              }
-              queryString.push(key + '=' + encodedParam(param));
-            }
-          }
-        }
-        builtUrl += '?' + queryString.join('&');
-      }
-
-      if (options.hash) {
-        if(caseChange)
-            builtUrl += '#' + String(options.hash).trim().toLowerCase();
-        else
-            builtUrl += '#' + String(options.hash).trim();
-      }
-    } 
-    return builtUrl;
-  };
-
-  buildUrl.noConflict = function () {
-    root.buildUrl = previousBuildUrl;
-    return buildUrl;
-  };
-
-  if (true) {
-    if ( true && module.exports) {
-      exports = module.exports = buildUrl;
-    }
-    exports.buildUrl = buildUrl;
-  } else {}
-}).call(this);
-
 
 /***/ }),
 

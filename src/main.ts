@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import buildUrl from 'build-url'
 import fetch from 'node-fetch'
 
 async function run(): Promise<void> {
@@ -12,16 +11,19 @@ async function run(): Promise<void> {
     }
     core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`)
 
-    const fullUrl = buildUrl(
-      'https://www.googleapis.com/pagespeedonline/v5/runPagespeed',
-      {
-        queryParams
-      }
+    const url = new URL(
+      'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
     )
-    core.debug(`Full URL: ${fullUrl}`)
+    url.searchParams.append('key', core.getInput('key', {required: true}))
+    url.searchParams.append('url', core.getInput('url', {required: true}))
+    url.searchParams.append('strategy', core.getInput('strategy'))
+    for (const category of core.getMultilineInput('categories')) {
+      url.searchParams.append('categories', category.toUpperCase())
+    }
+    core.debug(`URL: ${url.toString()}`)
 
     core.info(`Running Page Speed Insights for ${queryParams.url}`)
-    const response = await fetch(fullUrl)
+    const response = await fetch(url.toString())
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = await response.json()
 
