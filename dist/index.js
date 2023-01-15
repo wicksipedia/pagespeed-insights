@@ -62,9 +62,10 @@ function run() {
             const response = yield (0, node_fetch_1.default)(url.toString());
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = yield response.json();
-            for (const categoryKey of Object.keys(data.categories)) {
-                const category = data.categories[categoryKey];
-                const score = data.lighthouseResult.categories[category].score * 100;
+            const lighthouseResult = data.lighthouseResult;
+            for (const categoryKey of Object.keys(lighthouseResult.categories)) {
+                const category = lighthouseResult.categories[categoryKey];
+                const score = category.score * 100;
                 core.setOutput(category, score);
                 core.info(`${category}: ${score}`);
             }

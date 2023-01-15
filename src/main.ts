@@ -27,9 +27,10 @@ async function run(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = await response.json()
 
-    for (const categoryKey of Object.keys(data.categories)) {
-      const category = data.categories[categoryKey]
-      const score = data.lighthouseResult.categories[category].score * 100
+    const lighthouseResult = data.lighthouseResult
+    for (const categoryKey of Object.keys(lighthouseResult.categories)) {
+      const category = lighthouseResult.categories[categoryKey]
+      const score = category.score * 100
       core.setOutput(category, score)
       core.info(`${category}: ${score}`)
     }
