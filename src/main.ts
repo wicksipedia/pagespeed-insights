@@ -18,7 +18,7 @@ async function run(): Promise<void> {
     url.searchParams.append('url', core.getInput('url', {required: true}))
     url.searchParams.append('strategy', core.getInput('strategy'))
     for (const category of core.getMultilineInput('categories')) {
-      url.searchParams.append('categories', category.toUpperCase())
+      url.searchParams.append('category', category.toUpperCase())
     }
     core.debug(`URL: ${url.toString()}`)
 
