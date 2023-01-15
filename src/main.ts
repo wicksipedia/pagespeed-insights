@@ -28,11 +28,8 @@ async function run(): Promise<void> {
     const data: any = await response.json()
 
     const lighthouseResult = data.lighthouseResult
-    for (const categoryKey of Object.keys(lighthouseResult.categories)) {
-      const category = lighthouseResult.categories[categoryKey]
-      const score = category.score * 100
-      core.setOutput(category, score)
-      core.info(`${category}: ${score}`)
+    for (const category of Object.values(lighthouseResult.categories)) {
+      processCategory(category)
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
@@ -40,3 +37,18 @@ async function run(): Promise<void> {
 }
 
 run()
+
+function snakeCase(s: string): string {
+  return s
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .replace(/\s+/g, '_')
+    .toLowerCase()
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function processCategory(category: any): void {
+  const title = snakeCase(category.title)
+  const score = category.score * 100
+  core.debug(`${title}: ${score}`)
+  core.setOutput(title, score)
+}

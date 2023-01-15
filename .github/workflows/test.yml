@@ -26,7 +26,6 @@ jobs:
             accessibility
             best_practices
             performance
-            PWA
             SEO
           strategy: mobile
           key: ${{ secrets.PAGESPEED_INSIGHTS_API_KEY }}
