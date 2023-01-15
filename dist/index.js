@@ -50,9 +50,11 @@ function run() {
                 strategy: core.getInput('strategy'),
                 categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
             };
+            core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
             const fullUrl = (0, build_url_1.default)('https://www.googleapis.com/pagespeedonline/v5/runPagespeed', {
                 queryParams
             });
+            core.debug(`Full URL: ${fullUrl}`);
             core.info(`Running Page Speed Insights for ${queryParams.url}`);
             const response = yield (0, node_fetch_1.default)(fullUrl);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

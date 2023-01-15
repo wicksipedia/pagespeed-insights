@@ -10,6 +10,7 @@ async function run(): Promise<void> {
       strategy: core.getInput('strategy'),
       categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
     }
+    core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`)
 
     const fullUrl = buildUrl(
       'https://www.googleapis.com/pagespeedonline/v5/runPagespeed',
@@ -17,6 +18,7 @@ async function run(): Promise<void> {
         queryParams
       }
     )
+    core.debug(`Full URL: ${fullUrl}`)
 
     core.info(`Running Page Speed Insights for ${queryParams.url}`)
     const response = await fetch(fullUrl)
