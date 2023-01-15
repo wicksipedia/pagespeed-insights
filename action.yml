@@ -1,11 +1,32 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'PageSpeed Insights'
+description: 'Action that wraps a call to the PageSpeed Insights API and returns the data'
+author: 'wicksipedia'
 inputs:
-  milliseconds: # change this
+  url:
+    description: "The URL to run the check against"
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  key:
+    description: "A PageSpeed Insights API key"
+    required: true
+  categories:
+    description: "Categories of checks to run (accessibility, best_practices, performance, pwa, seo)."
+    required: false
+    default: performance
+  strategy:
+    description: "Strategy to use when analyzing the page (mobile/desktop)."
+    required: false
+    default: mobile
+outputs:
+  accessibility:
+    description: accessibility output
+  best_practices:
+    description: best_practices output
+  performance:
+    description: performance output
+  pwa:
+    description: pwa output
+  seo:
+    description: seo output
 runs:
   using: 'node16'
   main: 'dist/index.js'

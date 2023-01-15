@@ -20,5 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
-        with:
-          milliseconds: 1000
+        with:          
+          url: https://wicksipedia.com
+          categories: |
+            accessibility
+            best_practices
+            performance
+            SEO
+          strategy: mobile
+          key: ${{ secrets.PAGESPEED_INSIGHTS_API_KEY }}
