@@ -57,7 +57,7 @@ function run() {
             const maxRetries = 3;
             const delayDuration = 5000; // 5 seconds
             core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
-            const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
+            const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed-test');
             url.searchParams.append('key', core.getInput('key', { required: true }));
             url.searchParams.append('url', core.getInput('url', { required: true }));
             url.searchParams.append('strategy', core.getInput('strategy'));
@@ -72,7 +72,6 @@ function run() {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const data = yield response.json();
                     const lighthouseResult = data.lighthouseResult;
-                    core.info(`Test Run - Lightout Result - ${lighthouseResult.toString()}`);
                     for (const category of Object.values(lighthouseResult === null || lighthouseResult === void 0 ? void 0 : lighthouseResult.categories)) {
                         processCategory(category);
                     }

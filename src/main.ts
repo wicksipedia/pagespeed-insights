@@ -16,7 +16,7 @@ async function run(): Promise<void> {
     core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`)
 
     const url = new URL(
-      'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
+      'https://www.googleapis.com/pagespeedonline/v5/runPagespeed-test'
     )
     url.searchParams.append('key', core.getInput('key', {required: true}))
     url.searchParams.append('url', core.getInput('url', {required: true}))
@@ -34,7 +34,6 @@ async function run(): Promise<void> {
         const data: any = await response.json()
 
         const lighthouseResult = data.lighthouseResult
-        core.info(`Test Run - Lightout Result - ${lighthouseResult.toString()}`)
         for (const category of Object.values(lighthouseResult?.categories)) {
           processCategory(category)
         }
