@@ -37,7 +37,7 @@ async function run(): Promise<void> {
         for (const category of Object.values(lighthouseResult?.categories)) {
           processCategory(category)
         }
-        core.info(`✅ PageSpeed Insight - Website has been analayzed successfully!`)
+        core.info(`✅ PageSpeed Insights - Website has been analayzed successfully!`)
         break
       } else {
         core.info(`⚠️ Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration/1000} secs`)
@@ -48,7 +48,7 @@ async function run(): Promise<void> {
         await new Promise(resolve => setTimeout(resolve, delayDuration))
       } else {
         throw new Error(
-          '❌ PageSpeed Insight - failed to analayze the Website'
+          '❌ PageSpeed Insights - failed to analayze the Website'
         )
       }
     }
