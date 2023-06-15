@@ -55,7 +55,7 @@ function run() {
             };
             let retryCount = 0;
             const maxRetries = 3;
-            const delayDuration = 5000; // 5 seconds
+            const delayDuration = 20000; // 20 seconds
             core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
             const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed-test');
             url.searchParams.append('key', core.getInput('key', { required: true }));

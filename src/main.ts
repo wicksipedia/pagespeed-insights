@@ -12,7 +12,7 @@ async function run(): Promise<void> {
 
     let retryCount = 0
     const maxRetries = 3
-    const delayDuration = 5000 // 5 seconds
+    const delayDuration = 20000 // 20 seconds
     core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`)
 
     const url = new URL(
@@ -42,10 +42,13 @@ async function run(): Promise<void> {
         core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`)
       }
       retryCount++
+
       if (retryCount < maxRetries) {
         await new Promise(resolve => setTimeout(resolve, delayDuration))
       } else {
-        throw new Error('❌ PagesSpeed Insight - failed to analayze the Website')
+        throw new Error(
+          '❌ PagesSpeed Insight - failed to analayze the Website'
+        )
       }
     }
   } catch (error) {
