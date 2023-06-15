@@ -79,14 +79,14 @@ function run() {
                 }
                 else {
                     core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`);
-                    if (retryCount < maxRetries) {
-                        yield new Promise(resolve => setTimeout(resolve, delayDuration));
-                    }
-                    else {
-                        throw new Error('❌ PagesSpeed Insight - failed to analayze the Website');
-                    }
                 }
                 retryCount++;
+                if (retryCount < maxRetries) {
+                    yield new Promise(resolve => setTimeout(resolve, delayDuration));
+                }
+                else {
+                    throw new Error('❌ PagesSpeed Insight - failed to analayze the Website');
+                }
             }
         }
         catch (error) {

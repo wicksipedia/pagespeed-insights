@@ -40,13 +40,13 @@ async function run(): Promise<void> {
         break
       } else {
         core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`)
-        if (retryCount < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, delayDuration))
-        } else {
-          throw new Error('❌ PagesSpeed Insight - failed to analayze the Website')
-        }
       }
       retryCount++
+      if (retryCount < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delayDuration))
+      } else {
+        throw new Error('❌ PagesSpeed Insight - failed to analayze the Website')
+      }
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
