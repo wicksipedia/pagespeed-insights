@@ -53,6 +53,9 @@ function run() {
                 strategy: core.getInput('strategy'),
                 categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
             };
+            let retryCount = 0;
+            const maxRetries = 3;
+            const delayDuration = 5000; // 5 seconds
             core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
             const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
             url.searchParams.append('key', core.getInput('key', { required: true }));
@@ -63,12 +66,28 @@ function run() {
             }
             core.debug(`URL: ${url.toString()}`);
             core.info(`Running Page Speed Insights for ${queryParams.url}`);
-            const response = yield (0, node_fetch_1.default)(url.toString());
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const data = yield response.json();
-            const lighthouseResult = data.lighthouseResult;
-            for (const category of Object.values(lighthouseResult.categories)) {
-                processCategory(category);
+            while (retryCount < maxRetries) {
+                const response = yield (0, node_fetch_1.default)(url.toString());
+                if (response.ok) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const data = yield response.json();
+                    const lighthouseResult = data.lighthouseResult;
+                    core.info(`Test Run - Lightout Result - ${lighthouseResult.toString()}`);
+                    for (const category of Object.values(lighthouseResult === null || lighthouseResult === void 0 ? void 0 : lighthouseResult.categories)) {
+                        processCategory(category);
+                    }
+                    break;
+                }
+                else {
+                    core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`);
+                    if (retryCount < maxRetries) {
+                        yield new Promise(resolve => setTimeout(resolve, delayDuration));
+                    }
+                    else {
+                        throw new Error('❌ PagesSpeed Insight - failed to analayze the Website');
+                    }
+                }
+                retryCount++;
             }
         }
         catch (error) {
