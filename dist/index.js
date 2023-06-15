@@ -75,6 +75,7 @@ function run() {
                     for (const category of Object.values(lighthouseResult === null || lighthouseResult === void 0 ? void 0 : lighthouseResult.categories)) {
                         processCategory(category);
                     }
+                    core.info(`✅ PageSpeed Insight - Ran successfully`);
                     break;
                 }
                 else {
@@ -85,7 +86,7 @@ function run() {
                     yield new Promise(resolve => setTimeout(resolve, delayDuration));
                 }
                 else {
-                    throw new Error('❌ PagesSpeed Insight - failed to analayze the Website');
+                    throw new Error('❌ PageSpeed Insight - failed to analayze the Website');
                 }
             }
         }
