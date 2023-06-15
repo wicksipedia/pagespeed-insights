@@ -34,7 +34,7 @@ async function run(): Promise<void> {
         const data: any = await response.json()
 
         const lighthouseResult = data.lighthouseResult
-        core.info(`Lightout Result - ${lighthouseResult.toString()}`)
+        core.info(`Test Run - Lightout Result - ${lighthouseResult.toString()}`)
         for (const category of Object.values(lighthouseResult?.categories)) {
           processCategory(category)
         }
