@@ -57,7 +57,7 @@ function run() {
             const maxRetries = 3;
             const delayDuration = 20000; // 20 seconds
             core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`);
-            const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed-test');
+            const url = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
             url.searchParams.append('key', core.getInput('key', { required: true }));
             url.searchParams.append('url', core.getInput('url', { required: true }));
             url.searchParams.append('strategy', core.getInput('strategy'));
@@ -78,7 +78,7 @@ function run() {
                     break;
                 }
                 else {
-                    core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration} secs`);
+                    core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration / 1000} secs`);
                 }
                 retryCount++;
                 if (retryCount < maxRetries) {
