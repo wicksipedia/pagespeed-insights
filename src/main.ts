@@ -37,10 +37,10 @@ async function run(): Promise<void> {
         for (const category of Object.values(lighthouseResult?.categories)) {
           processCategory(category)
         }
-        core.info(`✅ PageSpeed Insight - Ran successfully`)
+        core.info(`✅ PageSpeed Insight - Website has been analayzed successfully!`)
         break
       } else {
-        core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration/1000} secs`)
+        core.info(`⚠️ Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration/1000} secs`)
       }
       retryCount++
 
