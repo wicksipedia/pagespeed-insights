@@ -39,7 +39,7 @@ async function run(): Promise<void> {
         }
         break
       } else {
-        core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`)
+        core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries} - Reattempting it in ${delayDuration} secs`)
       }
       retryCount++
 
