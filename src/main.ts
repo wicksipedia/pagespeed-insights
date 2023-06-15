@@ -9,6 +9,10 @@ async function run(): Promise<void> {
       strategy: core.getInput('strategy'),
       categories: core.getMultilineInput('categories').map(x => x.toUpperCase())
     }
+
+    let retryCount = 0
+    const maxRetries = 3
+    const delayDuration = 5000 // 5 seconds
     core.debug(`Query params: ${JSON.stringify(queryParams, null, 2)}`)
 
     const url = new URL(
@@ -23,13 +27,26 @@ async function run(): Promise<void> {
     core.debug(`URL: ${url.toString()}`)
 
     core.info(`Running Page Speed Insights for ${queryParams.url}`)
-    const response = await fetch(url.toString())
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data: any = await response.json()
+    while (retryCount < maxRetries) {
+      const response = await fetch(url.toString())
+      if (response.ok) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data: any = await response.json()
 
-    const lighthouseResult = data.lighthouseResult
-    for (const category of Object.values(lighthouseResult.categories)) {
-      processCategory(category)
+        const lighthouseResult = data.lighthouseResult
+        for (const category of Object.values(lighthouseResult.categories)) {
+          processCategory(category)
+        }
+        break
+      } else {
+        core.info(`Something went wrong! Retry ${retryCount + 1}/${maxRetries}`)
+        if (retryCount < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, delayDuration))
+        } else {
+          throw new Error('❌ PagesSpeed Insight - failed to analayze the Website')
+        }
+      }
+      retryCount++
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
