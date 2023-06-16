@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import fetch from 'node-fetch'
-import {LighthouseResultScore} from './models/lighthouseResultScore'
+import {LighthouseResultScore} from './lighthouseResultScore'
 
 async function run(): Promise<void> {
   try {
