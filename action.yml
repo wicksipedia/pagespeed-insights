@@ -16,6 +16,14 @@ inputs:
     description: "Strategy to use when analyzing the page (mobile/desktop)."
     required: false
     default: mobile
+  maximumNumberOfRetries:
+    description: Maximum number of times to call API before failing the action
+    required: false
+    default: 3
+  delayBetweenRetries:
+    description: Duration in ms to wait before retrying
+    required: false
+    default: 3000
 outputs:
   accessibility:
     description: accessibility output
