@@ -1,29 +1,38 @@
 import * as core from '@actions/core'
 import fetch from 'node-fetch'
+import {LighthouseResultScore} from './models/lighthouseResultScore'
 
 async function run(): Promise<void> {
   try {
     const url = getPagespeedInsightAPIUrl()
-
-    core.info(`Running Page Speed Insights for ${queryParams.url}`)
 
     const maximumNumberOfRetries = +core.getInput('maximumNumberOfRetries')
     const delayBetweenRetries = +core.getInput('delayBetweenRetries')
     let retryCount = 0
 
     while (retryCount < maximumNumberOfRetries) {
-      if (getLighthouseResult(url)) {
-        core.info(`✅ PageSpeed Insights - Website has been analayzed successfully!`)
-        break;
+      if (await getLighthouseResult(url)) {
+        core.info(
+          `✅ PageSpeed Insights - Website has been analayzed successfully!`
+        )
+        break
       }
 
-      core.info(`⚠️ Something went wrong! Retry ${retryCount + 1}/${maximumNumberOfRetries} - Reattempting it in ${delayBetweenRetries/1000} secs`)
+      core.info(
+        `⚠️ Something went wrong! Retry ${
+          retryCount + 1
+        }/${maximumNumberOfRetries} - Reattempting it in ${
+          delayBetweenRetries / 1000
+        } secs`
+      )
       retryCount++
 
       if (retryCount < maximumNumberOfRetries) {
         await new Promise(resolve => setTimeout(resolve, delayBetweenRetries))
       } else {
-        throw new Error('❌ PageSpeed Insights - failed to analayze the Website')
+        throw new Error(
+          '❌ PageSpeed Insights - failed to analayze the Website'
+        )
       }
     }
   } catch (error) {
@@ -33,7 +42,9 @@ async function run(): Promise<void> {
 
 run()
 
-function getPagespeedInsightAPIUrl(): URL {
+type PagespeedUrl = URL
+
+function getPagespeedInsightAPIUrl(): PagespeedUrl {
   const queryParams = {
     key: core.getInput('key', {required: true}),
     url: core.getInput('url', {required: true}),
@@ -53,16 +64,20 @@ function getPagespeedInsightAPIUrl(): URL {
     url.searchParams.append('category', category.toUpperCase())
   }
   core.debug(`URL: ${url.toString()}`)
+
+  return url
 }
 
-function getLighthouseResult(url: URL): boolean {
+async function getLighthouseResult(url: URL): Promise<boolean> {
   const response = await fetch(url.toString())
   if (response.ok) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = await response.json()
 
     const lighthouseResult = data.lighthouseResult
-    for (const category of Object.values(lighthouseResult?.categories)) {
+    for (const category of Object.values(
+      lighthouseResult?.categories as LighthouseResultScore[]
+    )) {
       const title = snakeCase(category.title)
       const score = category.score * 100
       core.debug(`${title}: ${score}`)
