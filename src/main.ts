@@ -79,7 +79,7 @@ async function getLighthouseResult(url: URL): Promise<boolean> {
       lighthouseResult?.categories as LighthouseResultScore[]
     )) {
       const title = snakeCase(category.title)
-      const score = category.score * 100
+      const score = Math.round(category.score * 100)
       core.debug(`${title}: ${score}`)
       core.setOutput(title, score)
     }
