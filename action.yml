@@ -1,6 +1,9 @@
 name: 'PageSpeed Insights'
 description: 'Action that wraps a call to the PageSpeed Insights API and returns the data'
 author: 'wicksipedia'
+branding:
+  icon: aperture
+  color: gray-dark
 inputs:
   url:
     description: "The URL to run the check against"
@@ -36,5 +39,5 @@ outputs:
   seo:
     description: seo output
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
